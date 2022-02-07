@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  dbpostgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: testdb
+
+  dbmysql:
+    image: mariadb
+    container_name: mysql
+    ports:
+      - 3808:3808
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+
+    volumes: 
+     - ./mysql.conf:/etc/mysql
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8000:8080
+    links: 
+      - dbmysql:db
+      - dbpostgres:db
+    depends_on:
+      - dbmysql
+      - dbpostgres
+      
